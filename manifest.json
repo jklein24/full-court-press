@@ -1,0 +1,22 @@
+{
+  "manifest_version": 2,
+
+  "name": "Full Court Press",
+  "description": "",
+  "version": "1",
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+
+  "browser_action": {
+    "default_icon": "imgs/icon.png",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "tabs",
+    "identity",
+    "http://fantasysports.yahooapis.com/fantasy/v2/*",
+    "https://api.login.yahoo.com/oauth/v2/*"
+  ]
+}
