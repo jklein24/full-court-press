@@ -5,7 +5,7 @@
   "description": "",
   "version": "1",
   "background": {
-    "scripts": ["background.js"],
+    "page": "background.html",
     "persistent": false
   },
 
@@ -16,7 +16,9 @@
   "permissions": [
     "tabs",
     "identity",
-    "http://fantasysports.yahooapis.com/fantasy/v2/*",
-    "https://api.login.yahoo.com/oauth/v2/*"
-  ]
+    "https://fantasysports.yahooapis.com/fantasy/v2/*",
+    "https://api.login.yahoo.com/oauth/v2/*",
+    "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"
+  ],
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkqQ9j+W6HPYjcAB3iut/T7Ya+YeXKdZpBlEjiVHONyQp7tnqpppjsxVT5fazKDFZWeyhVl4t2L1z1Pfcu8ETl2n2HA6sZX1bfoa3GCJUyQoY/FHNKejms/Hsjgdn1zOjz0YZEh84yxbAn82RRAUFZvATm9xa44nSUDx/QCbhBJTUWgOPoSn3Mne/4m9Mcxly62DE0QqK3DGDMpVKKP8Tn2l2kqwAAscCrkfjjnZmb59jc3B8zYupBhqLLT4OJNNO7UYli9NyOav/CtCqtnk3+WDB3V62bsC+YCkRnQiXpT38YD4g3lf+Oho7L/IdqVc/pr5lZ9b1g0fAX6CpFKAwAQIDAQAB"
 }
