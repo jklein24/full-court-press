@@ -21,6 +21,8 @@ function requestToken(opt_callback) {
   options, function(redirect_url) {
     oauthToken = getParameterByName(redirect_url, 'access_token');
     yid = getParameterByName(redirect_url, 'xoauth_yahoo_guid');
+
+    chrome.storage.local.set({'fcp.oauth': oauthToken, 'fcp.yid': yid});
     if (opt_callback) {
       opt_callback();
     }
@@ -28,6 +30,18 @@ function requestToken(opt_callback) {
 }
 
 function makeRequest(url, callback) {
+  if (!oauthToken) {
+    chrome.storage.local.get('fcp.oauth', function(token) {
+      oauthToken = token;
+      if (!oauthToken) {
+        requestToken(makeRequest.bind(this, url, callback));
+      } else {
+        makeRequest(url, callback);
+      }
+    });
+    return;
+  }
+
   $.ajax({
       type: 'GET',
       url: url,
@@ -55,10 +69,18 @@ function getUserLeagueId(callback) {
 
 function getScoreboard(opt_callback) {
   makeRequest(
-    'https://fantasysports.yahooapis.com/fantasy/v2/league/342.l.95801/scoreboard?format=json',
+    'https://fantasysports.yahooapis.com/fantasy/v2/league/342.l.' + leagueId + '/scoreboard?format=json',
     function(response) {
       var scoreboard = response.fantasy_content.league[1].scoreboard;
       if (opt_callback) {
+        if (!yid) {
+          chrome.storage.local.get('fcp.yid', function(guid) {
+            yid = guid;
+            getScoreboard(opt_callback);
+          });
+          return;
+        }
+
         opt_callback(findMyMatchup(scoreboard));
       }
     });
