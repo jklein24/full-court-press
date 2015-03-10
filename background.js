@@ -4,6 +4,7 @@ var redirectUri = chrome.identity.getRedirectURL('provider_cb');
 var redirectRe = new RegExp(redirectUri + '[#\?](.*)');
 var oauthToken = '';
 var yid = '';
+var leagueId;
 
 
 chrome.runtime.onInstalled.addListener(function() {
@@ -43,11 +44,12 @@ function makeRequest(url, callback) {
     });
 }
 
-function getUserLeagues() {
+function getUserLeagueId(callback) {
   makeRequest(
     'https://fantasysports.yahooapis.com/fantasy/v2/users;use_login=1/games;game_keys=342/leagues?format=json',
     function(response) {
-      alert(JSON.stringify(response.fantasy_content.users[0].user[1].games[0].game[1].leagues))
+      leagueId = response.fantasy_content.users[0].user[1].games[0].game[1].leagues[0].league[0].league_id;
+      callback();
     });
 }
 
@@ -56,9 +58,8 @@ function getScoreboard(opt_callback) {
     'https://fantasysports.yahooapis.com/fantasy/v2/league/342.l.95801/scoreboard?format=json',
     function(response) {
       var scoreboard = response.fantasy_content.league[1].scoreboard;
-      lastMatchupResult = findMyMatchup(scoreboard);
       if (opt_callback) {
-        opt_callback(lastMatchupResult);
+        opt_callback(findMyMatchup(scoreboard));
       }
     });
 }
@@ -76,7 +77,11 @@ function findMyMatchup(scoreboard) {
 
 chrome.runtime.onMessage.addListener(function(msg, sender, callback) {
   if (msg.type == "getMatchup") {
-    getScoreboard(callback);
+    if (!leagueId) {
+      getUserLeagueId(getScoreboard.bind(this, callback));
+    } else {
+      getScoreboard(callback);
+    }
   }
   return true;
 });
